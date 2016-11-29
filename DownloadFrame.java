@@ -4,6 +4,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import org.apache.commons.codec.binary.Hex;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -11,6 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JFileChooser;
 import java.io.File;
+import java.security.InvalidKeyException;
 
 public class DownloadFrame extends JFrame {
 
@@ -61,15 +65,15 @@ public class DownloadFrame extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 			//launch cloud drive dialog to select file from drive
 			//query drop down menu
-			//	if (comboDriveSelect.getSelectedItem() = "Dropbox"){
+//			if (comboDriveSelect.getSelectedItem() = "Dropbox"){
 					
-			//	}
-			//	else if (comboDriveSelect.getSelectedItem() = "Google Drive"){
+//			}
+//			else if (comboDriveSelect.getSelectedItem() = "Google Drive"){
 				
-			//	}
-			//	else if (comboDriveSelect.getSelectedItem() = "Box"){
+//			}
+//			else if (comboDriveSelect.getSelectedItem() = "Box"){
 				
-			//	}
+//			}
 
 	
 			}
@@ -88,6 +92,23 @@ public class DownloadFrame extends JFrame {
 				    //selectedFile.getAbsolutePath());
 				}
 			//decrypt selected file
+				ED ed = new ED("12345"); //***CHANGE THIS***
+		        File input = new File ("output.txt");
+		        File output = new File ("decrypted.txt");
+		        String iv = null;
+		        String salt = null;
+		        try
+		        {
+		            iv = Hex.encodeHexString (ed.getInitVec ()).toUpperCase ();
+		            salt = Hex.encodeHexString (ed.getSalt ()).toUpperCase ();
+					ed.setupDecrypt(iv, salt);
+					
+				} 
+				catch (Exception e1)
+			      {
+			          //e.printStackTrace();
+			      }
+
 				
 			//save to selected directory
 				

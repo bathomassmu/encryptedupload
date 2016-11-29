@@ -1,5 +1,33 @@
 import java.awt.EventQueue;
+import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.AlgorithmParameters;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.InvalidParameterSpecException;
+import java.security.spec.KeySpec;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
@@ -17,12 +45,17 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
 import javax.swing.JFileChooser;
-import java.io.File;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.sql.*;
+import javax.swing.*;
+
 
 public class UploadFrame {
 
 	JFrame paneEncryptedUL;
 	JFileChooser fileChooser = new JFileChooser();
+
 //	private final ButtonGroup buttonGroup = new ButtonGroup();
 //	private JRadioButton radioUL;
 
@@ -42,10 +75,13 @@ public class UploadFrame {
 		});
 	}
 
+	Connection connection = null;
+
 	/**
 	 * Create the application.
 	 */
 	public UploadFrame() {
+		connection=sqliteConnection.dbConnector();
 		initialize();
 	}
 
@@ -71,7 +107,6 @@ public class UploadFrame {
 				int result = fileChooser.showOpenDialog(btnSelectFile);
 				if (result == JFileChooser.APPROVE_OPTION) {
 					File selectedFile = fileChooser.getSelectedFile();
-				    //selectedFile.getAbsolutePath());
 				}			
 			}	
 		});
@@ -89,40 +124,55 @@ public class UploadFrame {
 		paneEncryptedUL.getContentPane().add(comboDriveSelect);		
 		
 		JButton btnOK = new JButton("Upload");
+//		btnOK.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//			}
+//		});
+		
 		btnOK.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mouseClicked(MouseEvent e)  {
 				String sDrive = "";
 				String sFile = ""; 
+				//int hpWord = pst.getInt(2);
+				
+				
 				
 			//query for selected file
-				
+				ED ed = new ED("12345"); //***CHANGE THIS***
+		        File input = new File ("input.txt");
+		        File output = new File ("output.txt");
+
+				try {
+					ed.setupEncrypt();
+					ed.WriteEncryptedFile(input, output);
+					ed.ReadEncryptedFile(input, output);
+					
+				} 
+				catch (Exception e1)
+			      {
+			          //e.printStackTrace();
+			      }
+			
+			//upload encrypted file to selected dropbox/drive
 			//query drop down menu
-			//	if (comboDriveSelect.getSelectedItem() = "Dropbox"){
+//			if (comboDriveSelect.getSelectedItem() = "Dropbox") {
 				
-			//	}
-			//	else if (comboDriveSelect.getSelectedItem() = "Google Drive"){
-			//	}
-			//	else if (comboDriveSelect.getSelectedItem() = "Box"){
-			//	}
+//			}
+//			else if (comboDriveSelect.getSelectedItem() = "Google Drive") {
+
+//			}
+//			else if (comboDriveSelect.getSelectedItem() = "Box") {
+
+//			}
 
 							
-				//fileDB.key = (encrypt filename+user.masterpassword)
-				
-				//encrypt file with fileDB.key
-				
-				//upload encrypted file to selected dropbox/drive
-				
-				//decrypt selected file with fileDB.key
-			
-				//download file to local drive
-				
-				//exit
-				paneEncryptedUL.dispose();
-				//back to ULDL screen
-				ULDLSelect frame = new ULDLSelect();
-				frame.setVisible(true);
-			}
+			//exit
+			paneEncryptedUL.dispose();
+			//back to ULDL screen
+			ULDLSelect frame = new ULDLSelect();
+			frame.setVisible(true);
+			}				
 		});
 		btnOK.setBounds(189, 70, 117, 29);
 		paneEncryptedUL.getContentPane().add(btnOK);
@@ -143,6 +193,10 @@ public class UploadFrame {
 		paneEncryptedUL.getContentPane().add(btnCancel);
 	}
 }
+		
+
+
+	
 
 //Trees
 //JScrollPane scrollLocal = new JScrollPane();
